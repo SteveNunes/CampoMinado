@@ -16,11 +16,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		//openConfigWindow();
-		Game.setFieldSize(16);
-		Game.setTileSize(48);
-		Game.setTotalBombs(10);
-		Game.start();
+		openConfigWindow();
 	}
 	
 	public static void main(String[] args) {
