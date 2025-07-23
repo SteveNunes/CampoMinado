@@ -29,10 +29,7 @@ hs_err_pid*
 /src/teste*/
 /.settings/
 /.vs/
-/BallGame/
-/Static TV/
 *.ini
-*.txt
 *.bat
 *.lnk
 *.exe
