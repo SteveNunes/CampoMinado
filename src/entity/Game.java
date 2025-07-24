@@ -2,10 +2,8 @@ package entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import enums.TileState;
@@ -23,7 +21,6 @@ import util.SoundsFX;
 
 public class Game {
 
-	private static Set<Tile> verifiedTiles;
 	private static List<Tile> tiles;
 	private static Map<Tile, Integer> explosion;
 	private static Stage stage;
@@ -32,9 +29,11 @@ public class Game {
 	private static Image sprites;
 	private static Image numbers;
 	private static int tileSize;
-	private static int fieldSize;
+	private static int fieldWidth;
+	private static int fieldHeight;
 	private static int totalBombs;
-	private static int screenSize;
+	private static int screenWidth;
+	private static int screenHeight;
 	private static int placedFlags;
 	private static boolean gameOver;
 	private static boolean win;
@@ -44,8 +43,9 @@ public class Game {
 		stage = new Stage();
 		sprites = new Image("file:appdata/images/sprites.png");
 		numbers = new Image("file:appdata/images/numbers.png");
-		screenSize = fieldSize * tileSize;
-		canvas = new Canvas(screenSize, screenSize);
+		screenWidth = fieldWidth * tileSize;
+		screenHeight = fieldHeight * tileSize;
+		canvas = new Canvas(screenWidth, screenHeight);
 		gc = canvas.getGraphicsContext2D();
 		gc.setImageSmoothing(false);
 		VBox vBox = new VBox(canvas);
@@ -59,6 +59,7 @@ public class Game {
 		});
 		stage.setScene(scene);
 		stage.setOnCloseRequest(e -> close = true);
+		stage.setResizable(false);
 		stage.show();
 		reset();
 		mainLoop();
@@ -68,8 +69,9 @@ public class Game {
 		Game.tileSize = tileSize;
 	}
 
-	public static void setFieldSize(int fieldSize) {
-		Game.fieldSize = fieldSize;
+	public static void setFieldSize(int width, int height) {
+		fieldWidth = width;
+		fieldHeight = height;
 	}
 
 	public static void setTotalBombs(int totalBombs) {
@@ -78,15 +80,14 @@ public class Game {
 
 	private static void reset() {
 		stage.setTitle("Campo Minado");
-		verifiedTiles = new HashSet<>();
 		tiles = new ArrayList<>();
 		explosion = new HashMap<>();
 		close = false;
 		win = false;
 		gameOver = false;
 		placedFlags = 0;
-		for (int y = 0; y < fieldSize; y++)
-			for (int x = 0; x < fieldSize; x++)
+		for (int y = 0; y < fieldHeight; y++)
+			for (int x = 0; x < fieldWidth; x++)
 				tiles.add(new Tile(x, y));
 		int bombs = 0;
 		do {
@@ -109,11 +110,8 @@ public class Game {
 	}
 	
 	private static void checkAroundTiles(Tile tile) {
-		if (verifiedTiles.contains(tile) || (!gameOver && tile.getState() == TileState.REVEALED))
+		if (tile.getState() == TileState.REVEALED)
 			return;
-
-		verifiedTiles.add(tile);
-
 		tile.setState(TileState.REVEALED);
 		if (!tile.haveBombsAround() || gameOver)
 			iterateAroundTiles(tile, t -> checkAroundTiles(t));
@@ -146,8 +144,6 @@ public class Game {
 			return;
 		}
 		
-		verifiedTiles.clear();
-
 		if (!gameOver && tile.isBomb()) {
 			explode(tile);
 			gameOver();
@@ -191,7 +187,7 @@ public class Game {
 
 	private static void mainLoop() {
 		GameUtils.createAnimationTimer(30, (load, fps) -> close, () -> {
-			gc.clearRect(0, 0, screenSize, screenSize);
+			gc.clearRect(0, 0, screenWidth, screenHeight);
 			for (Tile tile : tiles) {
 				int x = tile.getX(), y = tile.getY();
 				TileState state = tile.getState();
@@ -213,7 +209,7 @@ public class Game {
 									v = -4;
 								else
 									v = next;
-								if (next == 3) {
+								if (next == 2) {
 									for (Tile t : tiles)
 										if (t.isBomb() && !explosion.containsKey(t)) {
 											explode(t);
