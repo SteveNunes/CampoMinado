@@ -223,13 +223,10 @@ public class Game {
 							gc.drawImage(sprites, win ? 48 : 32, 0, 16, 16, x * tileSize, y * tileSize, tileSize, tileSize);
 					}
 				}
-				if (!tile.isBomb() && (gameOver || (state == TileState.REVEALED && tile.haveBombsAround())))
+				if (!tile.isBomb() && tile.haveBombsAround() && (gameOver || state == TileState.REVEALED))
 					gc.drawImage(numbers, tile.getBombsAround() * 64, 0, 64, 64, x * tileSize, y * tileSize, tileSize, tileSize);
 			}
 		}).start();
-	}
-
-	public static void close() {
 	}
 
 }

@@ -31,7 +31,6 @@ public class Main extends Application {
 			((ConfigsController)loader.getController()).init(stage);
 			stage.setTitle("Campo Minado");
 			stage.setResizable(false);
-			stage.setOnCloseRequest(e -> Game.close());
 			stage.show();
 		}
 		catch (IOException e) {

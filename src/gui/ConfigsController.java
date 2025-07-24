@@ -50,7 +50,6 @@ public class ConfigsController {
   		Game.setFieldSize(fieldWidth, fieldHeight);
   		Game.setTileSize(tileSize);
   		Game.setTotalBombs(comboBoxTotalBombs.getSelectionModel().getSelectedItem());
-  		stage.setOnCloseRequest(null);
   		stage.close();
   		Game.start();
   	});
