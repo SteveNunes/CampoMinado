@@ -32,14 +32,14 @@ public class ConfigsController {
   		tileSize = Integer.parseInt(newV.replace(" px", ""));
   		refreshCombos();
  		});
-  	comboBoxTileSize.getSelectionModel().select(1);
+  	comboBoxTileSize.getSelectionModel().select(3);
   	comboBoxFieldSize.valueProperty().addListener((o, oldV, newV) -> {
   		if (newV != null) {
 	  		String[] split = newV.split(" x ");
 	  		fieldWidth = Integer.parseInt(split[0]);
 	  		fieldHeight = Integer.parseInt(split[1]);
 	  		comboBoxTotalBombs.getItems().clear();
-	    	for (int n = 1; n < fieldWidth * fieldHeight; n += (n == 1 ? 4 : 5))
+	    	for (int n = fieldWidth < fieldHeight ? fieldWidth : fieldHeight; n < fieldWidth * fieldHeight; n += (n == 1 ? 4 : 5))
 	    		comboBoxTotalBombs.getItems().add(n);
 	    	comboBoxTotalBombs.getSelectionModel().select(comboBoxTotalBombs.getItems().size() / 10);
   		}

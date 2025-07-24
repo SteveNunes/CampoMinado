@@ -50,13 +50,7 @@ public class Game {
 		gc.setImageSmoothing(false);
 		VBox vBox = new VBox(canvas);
 		Scene scene = new Scene(vBox);
-		scene.setOnMouseClicked(e -> {
-			if (gameOver) {
-				reset();
-				return;
-			}
-			clickedAt((int) e.getX() / tileSize, (int) e.getY() / tileSize, e.getButton() == MouseButton.PRIMARY ? 1 : 2);
-		});
+		scene.setOnMouseClicked(e -> clickedAt((int) e.getX() / tileSize, (int) e.getY() / tileSize, e.getButton() == MouseButton.PRIMARY ? 1 : e.getButton() == MouseButton.SECONDARY ? 2 : 3));
 		stage.setScene(scene);
 		stage.setOnCloseRequest(e -> close = true);
 		stage.setResizable(false);
@@ -118,6 +112,11 @@ public class Game {
 	}
 
 	private static void clickedAt(int x, int y, int button) {
+		if (gameOver) {
+			reset();
+			return;
+		}
+		
 		Tile tile = null;
 		for (Tile t : tiles)
 			if (t.getX() == x && t.getY() == y) {
@@ -224,7 +223,7 @@ public class Game {
 							gc.drawImage(sprites, win ? 48 : 32, 0, 16, 16, x * tileSize, y * tileSize, tileSize, tileSize);
 					}
 				}
-				if (state == TileState.REVEALED && !tile.isBomb() && tile.haveBombsAround())
+				if (!tile.isBomb() && (gameOver || (state == TileState.REVEALED && tile.haveBombsAround())))
 					gc.drawImage(numbers, tile.getBombsAround() * 64, 0, 64, 64, x * tileSize, y * tileSize, tileSize, tileSize);
 			}
 		}).start();
